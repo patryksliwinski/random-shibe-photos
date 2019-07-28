@@ -8,16 +8,14 @@ import { addFakeRows, removeFakeRows } from "../actions";
 class App extends Component {
   generateRows() {
     let rows = [];
-    const { mode, rowsLength, photos, fakeRows, dispatch } = this.props;
+    const { mode, rowsLength, fakeRows, dispatch } = this.props;
     if (mode === "infinityScroll")
       for (let index = 0; rowsLength > index; index++) {
         rows.push(<ImagesRow index={index} key={`images-row-${index}`} />);
       }
     if (mode === "favorite") {
-      if (Math.ceil(photos.length / 4) > fakeRows.length)
-        dispatch(addFakeRows());
-      if (Math.ceil(photos.length / 4) < fakeRows.length)
-        dispatch(removeFakeRows());
+      if (rowsLength > fakeRows.length) dispatch(addFakeRows());
+      if (rowsLength < fakeRows.length) dispatch(removeFakeRows());
       rows = this.props.fakeRows.map((fakeRow, index) => (
         <ImagesRow index={index} key={`images-row-${index}`} />
       ));
@@ -43,12 +41,11 @@ App.propTypes = {
   photos: propTypes.array
 };
 
-const mapStateToProps = ({ rowsLength, mode, fakeRows, photos }) => {
+const mapStateToProps = ({ rowsLength, mode, fakeRows }) => {
   return {
     rowsLength,
     mode,
-    fakeRows,
-    photos
+    fakeRows
   };
 };
 
